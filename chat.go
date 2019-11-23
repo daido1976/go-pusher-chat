@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -51,5 +52,12 @@ func registerNewUser(rw http.ResponseWriter, req *http.Request) {
 }
 
 func pusherAuth(res http.ResponseWriter, req *http.Request) {
+	params, _ := ioutil.ReadAll(req.Body)
+	response, err := client.AuthenticatePrivateChannel(params)
 
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Fprintf(res, string(response))
 }
