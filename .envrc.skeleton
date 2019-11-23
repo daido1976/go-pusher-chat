@@ -1,0 +1,4 @@
+export APP_ID="YOUR_APP_ID"
+export KEY="YOUR_KEY"
+export SECRET="YOUR_SECRET"
+export CLUSTER="YOUR_CLUSTER"
