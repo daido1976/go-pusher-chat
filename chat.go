@@ -13,9 +13,9 @@ import (
 
 var client = pusher.Client{
 	AppID:   os.Getenv("APP_ID"),
-	Key:     os.Getenv("KEY"),
+	Key:     "d276ac41fb6f9fd82804",
 	Secret:  os.Getenv("SECRET"),
-	Cluster: os.Getenv("CLUSTER"),
+	Cluster: "ap3",
 	Secure:  true,
 }
 
