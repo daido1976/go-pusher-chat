@@ -1,5 +1,5 @@
-(function () {
-  var pusher = new Pusher('d276ac41fb6f9fd82804', {
+(() => {
+  const pusher = new Pusher('d276ac41fb6f9fd82804', {
       authEndpoint: '/pusher/auth',
       cluster: 'ap3',
       encrypted: true
@@ -15,7 +15,7 @@
       subscribedUsers: []
   }
 
-  var publicChannel = pusher.subscribe('update');
+  let publicChannel = pusher.subscribe('update');
 
   const chatBody = $(document)
   const chatRoomsList = $('#rooms')
@@ -80,7 +80,7 @@
           $('#replyMessage input').val('')
       },
 
-      LogIntoChatSession: function (evt) {
+      LogIntoChatSession: evt => {
           const name  = $('#fullname').val().trim()
           const email = $('#email').val().trim().toLowerCase()
 
@@ -113,7 +113,7 @@
   }
 
 
-  publicChannel.bind('new-user', function(data) {
+  publicChannel.bind('new-user', data => {
       if (data.email != chat.email){
           chat.subscribedChannels.push(pusher.subscribe('private-' + data.email));
           chat.subscribedUsers.push(data);
@@ -131,4 +131,4 @@
   chatReplyMessage.on('submit', helpers.replyMessage)
   chatRoomsList.on('click', 'li', helpers.loadChatRoom)
   chatBody.find('#loginScreenForm').on('submit', helpers.LogIntoChatSession)
-}());
+})();
