@@ -27,7 +27,7 @@ type user struct {
 func main() {
 	http.Handle("/", http.FileServer(http.Dir("./public")))
 
-	http.HandleFunc("new/user", registerNewUser)
+	http.HandleFunc("/new/user", registerNewUser)
 	http.HandleFunc("/pusher/auth", pusherAuth)
 
 	log.Fatal(http.ListenAndServe(":8090", nil))
