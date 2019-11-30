@@ -27,7 +27,8 @@
 
     displayChatMessage: message => {
       if (message.email === chat.email) {
-        document.querySelector("#chat-msgs").prepend(
+        document.querySelector("#chat-msgs").insertAdjacentHTML(
+          "beforeend",
           `<tr>
              <td>
                <div class="sender">${message.sender} @ <span class="date">${message.createdAt}</span></div>
@@ -69,7 +70,8 @@
         createdAt: createdAt
       });
 
-      document.querySelector("#chat-msgs").prepend(
+      document.querySelector("#chat-msgs").insertAdjacentHTML(
+        "beforeend",
         `<tr>
            <td>
              <div class="sender"> ${chat.name} @ <span class="date">${createdAt}</span></div>
@@ -127,7 +129,8 @@
       chat.subscribedUsers.forEach((user, index) => {
         document
           .querySelector("#rooms")
-          .append(
+          .insertAdjacentHTML(
+            "beforeend",
             `<li class="nav-item"><a data-room-id="${user.email}" data-user-name="${user.name}" data-channel-id="${index}" class="nav-link" href="#">${user.name}</a></li>`
           );
       });
@@ -135,7 +138,7 @@
   });
 
   chatReplyMessage.addEventListener("submit", helpers.replyMessage);
-  chatRoomsList.addEventListener("click", "li", helpers.loadChatRoom);
+  chatRoomsList.addEventListener("click", helpers.loadChatRoom);
   document
     .querySelector("#loginScreenForm")
     .addEventListener("submit", helpers.LogIntoChatSession);
