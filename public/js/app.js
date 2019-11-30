@@ -17,24 +17,24 @@
 
   let publicChannel = pusher.subscribe("update");
 
-  const chatBody = $(document);
-  const chatRoomsList = $("#rooms");
-  const chatReplyMessage = $("#replyMessage");
+  const chatRoomsList = document.querySelector("#rooms");
+  const chatReplyMessage = document.querySelector("#replyMessage");
 
   const helpers = {
     clearChatMessages: () => {
-      $("#chat-msgs").html("");
+      document.querySelector("#chat-msgs").innerHTML = "";
     },
 
     displayChatMessage: message => {
       if (message.email === chat.email) {
-        $("#chat-msgs").prepend(
+        document.querySelector("#chat-msgs").insertAdjacentHTML(
+          "beforeend",
           `<tr>
-                      <td>
-                          <div class="sender">${message.sender} @ <span class="date">${message.createdAt}</span></div>
-                          <div class="message">${message.text}</div>
-                      </td>
-                  </tr>`
+             <td>
+               <div class="sender">${message.sender} @ <span class="date">${message.createdAt}</span></div>
+               <div class="message">${message.text}</div>
+             </td>
+           </tr>`
         );
       }
     },
@@ -44,10 +44,12 @@
       chat.currentChannel = evt.target.dataset.channelId;
       chat.endUserName = evt.target.dataset.userName;
       if (chat.currentRoom !== undefined) {
-        $(".response").show();
-        $("#room-title").text(
-          "Write a message to " + evt.target.dataset.userName + "."
-        );
+        document.querySelector(".response").style.display = "block";
+        document
+          .querySelector("#room-title")
+          .textContent(
+            "Write a message to " + evt.target.dataset.userName + "."
+          );
       }
 
       evt.preventDefault();
@@ -58,9 +60,7 @@
       evt.preventDefault();
 
       let createdAt = new Date().toLocaleString();
-      let message = $("#replyMessage input")
-        .val()
-        .trim();
+      let message = document.querySelector("#replyMessage input").value.trim();
       let event = "client-" + chat.currentRoom;
 
       chat.subscribedChannels[chat.currentChannel].trigger(event, {
@@ -70,35 +70,32 @@
         createdAt: createdAt
       });
 
-      $("#chat-msgs").prepend(
+      document.querySelector("#chat-msgs").insertAdjacentHTML(
+        "beforeend",
         `<tr>
-                  <td>
-                      <div class="sender">
-                          ${chat.name} @ <span class="date">${createdAt}</span>
-                      </div>
-                      <div class="message">${message}</div>
-                  </td>
-              </tr>`
+           <td>
+             <div class="sender"> ${chat.name} @ <span class="date">${createdAt}</span></div>
+             <div class="message">${message}</div>
+           </td>
+         </tr>`
       );
 
-      $("#replyMessage input").val("");
+      document.querySelector("#replyMessage input").value = "";
     },
 
     LogIntoChatSession: evt => {
-      const name = $("#fullname")
-        .val()
-        .trim();
-      const email = $("#email")
-        .val()
-        .trim()
+      const name = document.querySelector("#fullname").value.trim();
+      const email = document
+        .querySelector("#email")
+        .value.trim()
         .toLowerCase();
 
       chat.name = name;
       chat.email = email;
 
-      chatBody
-        .find("#loginScreenForm input, #loginScreenForm button")
-        .attr("disabled", true);
+      document
+        .querySelector("#loginScreenForm input, #loginScreenForm button")
+        .setAttribute("disabled", true);
 
       let validName = name !== "" && name.length >= 3;
       let validEmail = email !== "" && email.length >= 5;
@@ -106,8 +103,8 @@
       if (validName && validEmail) {
         axios.post("/new/user", { name, email }).then(res => {
           console.log(res);
-          chatBody.find("#registerScreen").css("display", "none");
-          chatBody.find("#main").css("display", "block");
+          document.querySelector("#registerScreen").style.display = "none";
+          document.querySelector("#main").style.display = "block";
 
           chat.myChannel = pusher.subscribe("private-" + res.data.email);
           chat.myChannel.bind("client-" + chat.email, data => {
@@ -127,17 +124,22 @@
       chat.subscribedChannels.push(pusher.subscribe("private-" + data.email));
       chat.subscribedUsers.push(data);
 
-      $("#rooms").html("");
+      document.querySelector("#rooms").innerHTML = "";
 
       chat.subscribedUsers.forEach((user, index) => {
-        $("#rooms").append(
-          `<li class="nav-item"><a data-room-id="${user.email}" data-user-name="${user.name}" data-channel-id="${index}" class="nav-link" href="#">${user.name}</a></li>`
-        );
+        document
+          .querySelector("#rooms")
+          .insertAdjacentHTML(
+            "beforeend",
+            `<li class="nav-item"><a data-room-id="${user.email}" data-user-name="${user.name}" data-channel-id="${index}" class="nav-link" href="#">${user.name}</a></li>`
+          );
       });
     }
   });
 
-  chatReplyMessage.on("submit", helpers.replyMessage);
-  chatRoomsList.on("click", "li", helpers.loadChatRoom);
-  chatBody.find("#loginScreenForm").on("submit", helpers.LogIntoChatSession);
+  chatReplyMessage.addEventListener("submit", helpers.replyMessage);
+  chatRoomsList.addEventListener("click", helpers.loadChatRoom);
+  document
+    .querySelector("#loginScreenForm")
+    .addEventListener("submit", helpers.LogIntoChatSession);
 })();
